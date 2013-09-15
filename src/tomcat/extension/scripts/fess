@@ -1,0 +1,125 @@
+#!/bin/sh
+#
+# chkconfig: - 85 15
+# description: Fess init script
+# processname: fess
+# pidfile: /var/run/fess.pid
+#
+
+# Source function library.
+if [ -f /etc/rc.d/init.d/functions ]; then
+. /etc/rc.d/init.d/functions
+fi
+
+# Source networking configuration.
+if [ -f /etc/sysconfig/network ]; then
+. /etc/sysconfig/network
+fi
+
+# Check that networking is up.
+[ "x${NETWORKING}" = "xno" ] && exit 0
+
+# Fess name
+FESS_PROG=fess
+
+# if FESS_USER is not set, use fess user
+if [ -z "$FESS_USER" ]; then
+    FESS_USER="fess"
+fi
+
+# Set Fess environment.
+
+PID_FILE=/var/run/${FESS_PROG}.pid
+
+if [ x$JAVA_HOME = "x" ] ; then
+    export JAVA_HOME=/usr/java/default/
+fi
+export CATALINA_HOME=/opt/$FESS_PROG
+export CATALINA_OPTS=
+export PATH=$JAVA_HOME/bin:$PATH:/usr/bin:/usr/local/bin
+export CATALINA_PID=$PID_FILE
+
+SLEEP_INTERVAL=60
+
+[ -f $CATALINA_HOME/bin/startup.sh ] || exit 0
+[ -f $CATALINA_HOME/bin/shutdown.sh ] || exit 0
+
+RETVAL=0
+
+# See how we were called.
+start() {
+    if [ -f $PID_FILE ] ; then
+        echo "${FESS_PROG} is running."
+        exit 1;
+    fi
+
+    # Start daemon.
+    echo -n "Starting $FESS_PROG: "
+
+    touch $PID_FILE
+
+    chown -R $FESS_USER $CATALINA_HOME/logs
+    chown -R $FESS_USER $CATALINA_HOME/work
+    chown -R $FESS_USER $CATALINA_HOME/temp
+    chown -R $FESS_USER $CATALINA_HOME/webapps
+    chown $FESS_USER $PID_FILE
+
+    if [ -f /etc/rc.d/init.d/functions ]; then
+        daemon --user $FESS_USER $CATALINA_HOME/bin/startup.sh
+    else
+        su - $FESS_USER -c "$CATALINA_HOME/bin/startup.sh"
+    fi
+
+    RETVAL=$?
+    echo
+    [ $RETVAL = !0 ] && rm -f $PID_FILE
+}
+
+stop() {
+    echo -n "Stopping $FESS_PROG: "
+
+    if [ -f /etc/rc.d/init.d/functions ]; then
+        daemon --user $FESS_USER $CATALINA_HOME/bin/shutdown.sh $SLEEP_INTERVAL
+    else
+        su - $FESS_USER -c "$CATALINA_HOME/bin/shutdown.sh $SLEEP_INTERVAL"
+    fi
+    echo
+
+    count=0
+    while [ $count -lt $SLEEP_INTERVAL ] ; do
+        ps -U $FESS_USER | grep java > /dev/null
+        ret=`echo $?`
+        if [ $ret = 0 ] ; then
+            echo -n "."
+            count=`expr $count + 1`
+            sleep 1;
+        else
+            count=$SLEEP_INTERVAL
+        fi
+    done
+
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && rm -f $PID_FILE
+}
+
+# See how we were called.
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    status)
+        status $FESS_PROG
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+esac
+exit $RETVAL

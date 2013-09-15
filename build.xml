@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="fess" default="all" basedir=".">
+
+  <property file="override.properties" />
+  <property file="build.properties" />
+
+  <taskdef resource="net/sf/antcontrib/antlib.xml">
+    <classpath>
+      <pathelement location="${basedir}/lib/ant-contrib-1.0b2.jar" />
+    </classpath>
+  </taskdef>
+
+  <condition property="profile.mysql">
+    <equals arg1="${build.fess.profile}" arg2="mysql"/>
+  </condition>
+
+  <condition property="profile.oracle">
+    <equals arg1="${build.fess.profile}" arg2="oracle"/>
+  </condition>
+
+  <target name="setup.shell"
+          description="--> Setup shell parameters">
+    <condition property="shell.cmd" value="sh">
+      <os family="unix" />
+    </condition>
+    <condition property="shell.options" value="-c">
+      <os family="unix" />
+    </condition>
+    <condition property="shell.cmd" value="cmd.exe">
+      <os family="windows" />
+    </condition>
+    <condition property="shell.options" value="/c">
+      <os family="windows" />
+    </condition>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- DISPLAY LOGO                                                        -->
+  <!-- =================================================================== -->
+
+  <target name="display.logo" 
+          description="--> Display Logo">
+    <echo>
+--------------------------------
+  ~ Full tExt Search System ~
+--------------------------------
+    </echo>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- CLEAN                                                               -->
+  <!-- =================================================================== -->
+
+  <target name="clean" depends="display.logo"
+          description="--> Clean All">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- BUILD                                                               -->
+  <!-- =================================================================== -->
+
+  <target name="build" depends="display.logo"
+          description="--> Build Fess">
+    <antcall target="build.fess"/>
+    <antcall target="build.lucene-gosen"/>
+    <antcall target="setup.tomcat"/>
+    <antcall target="setup.solr"/>
+    <antcall target="setup.server"/>
+    <antcall target="package"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- BUILD FESS APPLICATION                                              -->
+  <!-- =================================================================== -->
+
+  <target name="build.fess" 
+          description="--> Build Fess Application">
+    <mkdir dir="${build.dir}"/>
+
+    <antcall target="checkout.fess"/>
+    <antcall target="build.fess.app"/>
+
+    <antcall target="checkout.fess.solr.plugin"/>
+    <antcall target="build.fess.solr.plugin"/>
+  </target>
+
+  <target name="checkout.fess" 
+          description="--> Checkout Fess Application">
+    <exec
+      executable="svn"
+      dir="${build.dir}"
+      >
+        <arg line="checkout ${fess.app.svn.path} --revision ${fess.app.svn.revision} ${fess.app.svn.module}"/>
+    </exec>
+  </target>
+
+  <target name="build.fess.app.mysql" if="profile.mysql"
+          description="--> Build Fess app for mysql">
+    <!-- build -->
+    <delete file="${build.fess.app.dir}/src/main/java/jp/sf/fess/helper/impl/H2DatabaseHelperImpl.java"/>
+    <delete file="${build.fess.app.dir}/src/main/java/jp/sf/fess/servlet/H2ConfigServlet.java"/>
+
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:download'"/>
+    </exec>
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:jdbc -P ${build.fess.profile}'"/>
+    </exec>
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:generate -P ${build.fess.profile}'"/>
+    </exec>
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:sql2entity -P ${build.fess.profile}'"/>
+    </exec>
+
+    <!-- workaround for mysql -->
+    <replace dir="${build.fess.app.dir}/src/main/java/jp/sf/fess/db" token="// MySQL: " value="">
+      <include name="**/*.java" />
+    </replace>
+  </target>
+
+  <target name="build.fess.app.oracle" if="profile.oracle"
+          description="--> Build Fess app for oracle">
+    <!-- build -->
+    <delete file="${build.fess.app.dir}/src/main/java/jp/sf/fess/helper/impl/H2DatabaseHelperImpl.java"/>
+    <delete file="${build.fess.app.dir}/src/main/java/jp/sf/fess/servlet/H2ConfigServlet.java"/>
+
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:download'"/>
+    </exec>
+    <copy file="${driver.oracle.file}"
+      todir="${build.fess.mydbflute.dir}/lib" overwrite="true"/>
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:jdbc -P ${build.fess.profile}'"/>
+    </exec>
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;DATA_CONFIG_TO_B_TYPE&quot;"
+      value="javaName=&quot;DataConfigToBrowserTypeMapping&quot; name=&quot;DATA_CONFIG_TO_B_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;DATA_CONFIG_TO_LABEL_TYPE&quot;"
+      value="javaName=&quot;DataConfigToLabelTypeMapping&quot; name=&quot;DATA_CONFIG_TO_LABEL_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;DATA_CONFIG_TO_ROLE_TYPE&quot;"
+      value="javaName=&quot;DataConfigToRoleTypeMapping&quot; name=&quot;DATA_CONFIG_TO_ROLE_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;FILE_CONFIG_TO_B_TYPE&quot;"
+      value="javaName=&quot;FileConfigToBrowserTypeMapping&quot; name=&quot;FILE_CONFIG_TO_B_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;FILE_CONFIG_TO_LABEL_TYPE&quot;"
+      value="javaName=&quot;FileConfigToLabelTypeMapping&quot; name=&quot;FILE_CONFIG_TO_LABEL_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;FILE_CONFIG_TO_ROLE_TYPE&quot;"
+      value="javaName=&quot;FileConfigToRoleTypeMapping&quot; name=&quot;FILE_CONFIG_TO_ROLE_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;LABEL_TYPE_TO_ROLE_TYPE&quot;"
+      value="javaName=&quot;LabelTypeToRoleTypeMapping&quot; name=&quot;LABEL_TYPE_TO_ROLE_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;WEB_CONFIG_TO_B_TYPE&quot;"
+      value="javaName=&quot;WebConfigToBrowserTypeMapping&quot; name=&quot;WEB_CONFIG_TO_B_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;WEB_CONFIG_TO_LABEL_TYPE&quot;"
+      value="javaName=&quot;WebConfigToLabelTypeMapping&quot; name=&quot;WEB_CONFIG_TO_LABEL_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="name=&quot;WEB_CONFIG_TO_ROLE_TYPE&quot;"
+      value="javaName=&quot;WebConfigToRoleTypeMapping&quot; name=&quot;WEB_CONFIG_TO_ROLE_TYPE&quot;"
+    />
+    <replace file="${build.fess.app.dir}/dbflute_oracle/schema/project-schema-fess.xml"
+      token="dbType=&quot;FLOAT&quot; javaType=&quot;java.math.BigDecimal&quot;"
+      value="dbType=&quot;FLOAT&quot; javaType=&quot;Float&quot;"
+    />
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:generate -P ${build.fess.profile}'"/>
+    </exec>
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn dbflute:sql2entity -P ${build.fess.profile}'"/>
+    </exec>
+
+  </target>
+
+  <target name="build.fess.app" depends="setup.shell,build.fess.app.mysql,build.fess.app.oracle"
+          description="--> Build Fess app by Maven 2">
+    <!-- build -->
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.app.dir}"
+      >
+      <arg line="${shell.options} 'mvn install -P ${build.fess.profile} -DskipTests=true'"/>
+    </exec>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- BUILD lucene-gosen                                                  -->
+  <!-- =================================================================== -->
+
+  <target name="build.lucene-gosen" 
+          description="--> Build lucene-gosen">
+    <mkdir dir="${build.dir}"/>
+
+    <antcall target="checkout.lucene-gosen"/>
+    <antcall target="build.lucene-gosen.app"/>
+  </target>
+
+  <target name="checkout.lucene-gosen" 
+          description="--> Checkout lucene-gosen">
+    <exec
+      executable="svn"
+      dir="${build.dir}"
+      >
+        <arg line="checkout ${lucene-gosen.svn.path} --revision ${lucene-gosen.svn.revision} ${lucene-gosen.svn.module}"/>
+    </exec>
+  </target>
+
+  <target name="build.lucene-gosen.app" depends="setup.shell"
+          description="--> Build lucene-gosen by Ant">
+    <!-- build -->
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.lucene-gosen.dir}"
+      >
+      <arg line="${shell.options} 'ant nodic-jar'"/>
+    </exec>
+    <!-- build dic -->
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.lucene-gosen.dir}"
+      >
+      <arg line="${shell.options} 'ant build-dic-naist-chasen'"/>
+    </exec>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- BUILD FESS SOLR PLUGIN                                              -->
+  <!-- =================================================================== -->
+
+  <target name="checkout.fess.solr.plugin" 
+          description="--> Checkout Fess Solr Plugin">
+    <exec
+      executable="svn"
+      dir="${build.dir}"
+      >
+        <arg line="checkout ${fess.solr.plugin.svn.path} --revision ${fess.solr.plugin.svn.revision} ${fess.solr.plugin.svn.module}"/>
+    </exec>
+  </target>
+
+  <target name="build.fess.solr.plugin" depends="setup.shell"
+          description="--> Build Fess Solr Plugin by Maven 2">
+    <!-- build -->
+    <exec
+      executable="${shell.cmd}"
+      failonerror="true"
+      dir="${build.fess.solr.plugin.dir}"
+      >
+      <arg line="${shell.options} 'mvn install dependency:copy-dependencies -DskipTests=true'"/>
+    </exec>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- SETUP TOMCAT                                                        -->
+  <!-- =================================================================== -->
+
+  <target name="setup.tomcat" 
+          description="--> Setup Tomcat">
+    <mkdir dir="${build.dir}"/>
+    <get usetimestamp="true" dest="${build.tomcat.file}" src="${tomcat.url}"/>
+    <unzip src="${build.tomcat.file}" dest="${build.dir}"/>
+
+    <!-- Clean webapps -->
+    <delete dir="${build.tomcat.dir}/webapps/ROOT"/>
+    <delete dir="${build.tomcat.dir}/webapps/docs"/>
+    <delete dir="${build.tomcat.dir}/webapps/examples"/>
+    <delete dir="${build.tomcat.dir}/webapps/host-manager"/>
+
+    <move todir="${package.build.dir}">
+      <fileset dir="${build.tomcat.dir}"/>
+    </move>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- SETUP SOLR                                                          -->
+  <!-- =================================================================== -->
+
+  <target name="setup.solr" 
+          description="--> Setup Solr">
+    <mkdir dir="${build.dir}"/>
+    <get usetimestamp="true" dest="${build.solr.file}" src="${solr.url}"/>
+    <unzip src="${build.solr.file}" dest="${build.dir}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- SETUP SERVER                                                          -->
+  <!-- =================================================================== -->
+
+  <target name="setup.server" 
+          description="--> Setup Server">
+    <mkdir dir="${build.dir}"/>
+    <!-- copy fess.war -->
+    <unwar src="${build.fess.app.war.file}"
+      dest="${build.fess.app.deployed.war}"/>
+    <!-- copy solr.war -->
+    <unwar src="${build.solr.war.file}"
+      dest="${build.solr.deployed.war}"/>
+    <!-- copy solr example -->
+    <copy todir="${package.build.dir}/solr/core1" overwrite="true">
+      <fileset dir="${build.solr.example.dir}/solr">
+        <include name="**"/>
+      </fileset>
+    </copy>
+    <!-- Solr4 -->
+    <copy todir="${package.build.dir}/solr/core1/conf" overwrite="true">
+      <fileset dir="${build.solr.example.dir}/solr/collection1/conf">
+        <include name="**"/>
+      </fileset>
+    </copy>
+    <delete dir="${package.build.dir}/solr/core1/collection1"/>
+    <delete file="${package.build.dir}/solr/core1/README.txt"/>
+    <delete file="${package.build.dir}/solr/core1/solr.xml"/>
+    <move file="${package.build.dir}/solr/core1/zoo.cfg"
+      tofile="${package.build.dir}/solr/zoo.cfg"/>
+    <!-- Logging -->
+    <copy todir="${package.build.dir}/webapps/solr/WEB-INF/lib" overwrite="true">
+      <fileset dir="${build.solr.example.dir}/lib/ext">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+    <mkdir dir="${package.build.dir}/webapps/solr/WEB-INF/classes"/>
+    <copy file="${build.solr.example.dir}/resources/log4j.properties"
+      todir="${package.build.dir}/webapps/solr/WEB-INF/classes" overwrite="true"/>
+    <!-- copy solr dist -->
+    <mkdir dir="${package.build.dir}/solr/dist"/>
+    <copy todir="${package.build.dir}/solr/dist" overwrite="true">
+      <fileset dir="${build.solr.dir}/dist">
+        <include name="**"/>
+      </fileset>
+    </copy>
+    <!-- copy solr contrib -->
+    <mkdir dir="${package.build.dir}/solr/contrib"/>
+    <copy todir="${package.build.dir}/solr/contrib" overwrite="true">
+      <fileset dir="${build.solr.dir}/contrib">
+        <include name="**"/>
+      </fileset>
+    </copy>
+    <!-- copy solr plugin -->
+    <mkdir dir="${build.fess.solr.plugin.deployed.jar.dir}"/>
+    <copy file="${build.fess.solr.plugin.jar.file}"
+      tofile="${build.fess.solr.plugin.deployed.jar.file}" overwrite="true"/>
+    <copy file="${build.fess.suggest.plugin.jar.file}"
+      tofile="${build.fess.suggest.plugin.deployed.jar.file}" overwrite="true"/>
+    <copy todir="${package.build.dir}/solr/lib" overwrite="true">
+      <fileset dir="${build.fess.solr.plugin.dir}/target/dependency">
+        <include name="icu4j-*.jar"/>
+      </fileset>
+    </copy>
+    <copy file="${package.build.dir}/solr/core1/conf/lang/userdict_ja.txt"
+      tofile="${package.build.dir}/solr/core1/conf/lang/userdict_suggest_ja.txt"
+      overwrite="true"/>
+    <!-- copy lucene-gosen -->
+    <mkdir dir="${package.build.dir}/solr/lib"/>
+    <copy todir="${package.build.dir}/solr/lib" overwrite="true">
+      <fileset dir="${build.lucene-gosen.dir}/dist">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
+    <mkdir dir="${package.build.dir}/solr/core1/conf/dictionary/naist-chasen"/>
+    <copy todir="${package.build.dir}/solr/core1/conf/dictionary/naist-chasen"
+      overwrite="true">
+      <fileset dir="${build.lucene-gosen.dir}/dictionary/naist-chasen">
+        <include name="*.sen"/>
+      </fileset>
+    </copy>
+    <copy todir="${package.build.dir}/solr/core1/conf" overwrite="true">
+      <fileset dir="${build.lucene-gosen.dir}/example">
+        <include name="*_ja.txt"/>
+      </fileset>
+    </copy>
+    <!-- copy tomcat -->
+    <copy todir="${package.build.dir}" overwrite="true">
+      <fileset dir="${src.tomcat.dir}">
+        <include name="**"/>
+      </fileset>
+    </copy>
+    <concat destfile="${package.build.dir}/NOTICE" append="true"
+      encoding="UTF-8" outputencoding="UTF-8">
+      <filelist dir="${basedir}" files="NOTICE"/>
+    </concat>
+  </target>
+
+  <target name="package" 
+          description="--> Package Fess">
+    <!-- zip -->
+    <zip file="${package.build.file}">
+      <zipfileset dir="${build.dir}">
+        <include name="${package.build.name}/**"/>
+      </zipfileset>
+    </zip>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- ALL BUILD                                                           -->
+  <!-- =================================================================== -->
+
+  <target name="all" depends="display.logo"
+          description="--> Build all">
+    <antcall target="clean"/>
+    <antcall target="build"/>
+  </target>
+
+</project>
+
