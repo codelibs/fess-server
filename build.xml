@@ -89,10 +89,16 @@
   <target name="checkout.fess" 
           description="--> Checkout Fess Application">
     <exec
-      executable="svn"
+      executable="git"
       dir="${build.dir}"
       >
-        <arg line="checkout ${fess.app.svn.path} --revision ${fess.app.svn.revision} ${fess.app.svn.module}"/>
+        <arg line="clone ${fess.app.git.path} ${fess.app.git.module}"/>
+    </exec>
+    <exec
+      executable="git"
+      dir="${build.dir}/${fess.app.git.module}"
+      >
+        <arg line="checkout ${fess.app.git.branch}"/>
     </exec>
   </target>
 
@@ -281,10 +287,16 @@
   <target name="checkout.fess.solr.plugin" 
           description="--> Checkout Fess Solr Plugin">
     <exec
-      executable="svn"
+      executable="git"
       dir="${build.dir}"
       >
-        <arg line="checkout ${fess.solr.plugin.svn.path} --revision ${fess.solr.plugin.svn.revision} ${fess.solr.plugin.svn.module}"/>
+        <arg line="clone ${fess.solr.plugin.git.path} ${fess.solr.plugin.git.module}"/>
+    </exec>
+    <exec
+      executable="git"
+      dir="${build.dir}/${fess.solr.plugin.git.module}"
+      >
+        <arg line="checkout ${fess.solr.plugin.git.branch}"/>
     </exec>
   </target>
 
