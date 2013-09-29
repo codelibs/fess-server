@@ -32,7 +32,14 @@ fi
 PID_FILE=/var/run/${FESS_PROG}.pid
 
 if [ x$JAVA_HOME = "x" ] ; then
-    export JAVA_HOME=/usr/java/default/
+    if [ -d /usr/java/default ] ; then
+        export JAVA_HOME=/usr/java/default
+    elif [ -d /usr/lib/jvm/java ] ; then
+        export JAVA_HOME=/usr/lib/jvm/java
+    else
+        echo "Java is not found."
+        exit 1;
+    fi
 fi
 export CATALINA_HOME=/opt/$FESS_PROG
 export CATALINA_OPTS=
