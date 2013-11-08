@@ -99,7 +99,11 @@
        when adding a document.
    -->
 
-    <field name="id" type="string" stored="true" indexed="true" required="true" multiValued="false" docValues="true" />
+    <!-- ID fields -->
+    <field name="docId" type="string" stored="true" indexed="true" required="true"
+      multiValued="false" docValues="true" default="NEW" />
+    <field name="id" type="string" stored="true" indexed="true" required="true"
+      multiValued="false" docValues="true" />
     <!-- core fields -->
     <field name="parentId" type="string" stored="true" indexed="true"/>
     <field name="segment" type="string" stored="true" indexed="true"/>
@@ -111,11 +115,10 @@
     <field name="content" type="text" stored="true" indexed="true" termVectors="true"/>
     <field name="title" type="text" stored="true" indexed="true" termVectors="true"/>
     <field name="cache" type="string" stored="true" indexed="false"/>
-    <field name="tstamp" type="tdate" stored="true" indexed="true"/>
+    <field name="created" type="tdate" stored="true" indexed="true"/>
     <field name="anchor" type="string" stored="true" indexed="true" multiValued="true"/>
     <field name="contentLength" type="tlong" stored="true" indexed="true"/>
     <field name="lastModified" type="tdate" stored="true" indexed="true"/>
-    <field name="lang" type="string" stored="true" indexed="true"/>
     <field name="mimetype" type="string" stored="true" indexed="true"/>
     <field name="_version_" type="long" indexed="true" stored="true"/>
     <!-- multi values -->
