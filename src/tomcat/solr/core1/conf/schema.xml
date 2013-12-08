@@ -103,7 +103,7 @@
     <field name="docId" type="string" stored="true" indexed="true" required="true"
       multiValued="false" docValues="true" default="NEW" />
     <field name="id" type="string" stored="true" indexed="true" required="true"
-      multiValued="false" docValues="true" />
+      multiValued="false" />
     <!-- core fields -->
     <field name="parentId" type="string" stored="true" indexed="true"/>
     <field name="segment" type="string" stored="true" indexed="true"/>
@@ -413,6 +413,12 @@
     <dynamicField name="*_td_s_m" type="tdouble" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_tdt_s_m" type="tdate" indexed="false" stored="true" multiValued="true"/>
     <!-- Dynamic field definitions (docValues) -->
+    <dynamicField name="*_s_x_dv" type="string" indexed="false" stored="false" docValues="true"/>
+    <dynamicField name="*_i_x_dv" type="int" indexed="false" stored="false" docValues="true"/>
+    <dynamicField name="*_l_x_dv" type="long" indexed="false" stored="false" docValues="true"/>
+    <dynamicField name="*_f_x_dv" type="float" indexed="false" stored="false" docValues="true"/>
+    <dynamicField name="*_d_x_dv" type="double" indexed="false" stored="false" docValues="true"/>
+    <dynamicField name="*_dt_x_dv" type="date" indexed="false" stored="false" docValues="true"/>
     <dynamicField name="*_s_dv" type="string" indexed="true" stored="true" docValues="true"/>
     <dynamicField name="*_i_dv" type="int" indexed="true" stored="true" docValues="true"/>
     <dynamicField name="*_l_dv" type="long" indexed="true" stored="true" docValues="true"/>
