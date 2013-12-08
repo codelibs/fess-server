@@ -227,6 +227,7 @@
     <dynamicField name="*_l_i" type="long" indexed="true" stored="false"/>
     <dynamicField name="*_f_i" type="float" indexed="true" stored="false"/>
     <dynamicField name="*_d_i" type="double" indexed="true" stored="false"/>
+    <dynamicField name="*_dt_i" type="date" indexed="true" stored="false"/>
     <dynamicField name="*_ti_i" type="tint" indexed="true" stored="false"/>
     <dynamicField name="*_tl_i" type="tlong" indexed="true" stored="false"/>
     <dynamicField name="*_tf_i" type="tfloat" indexed="true" stored="false"/>
@@ -281,6 +282,7 @@
     <dynamicField name="*_l_s" type="long" indexed="false" stored="true"/>
     <dynamicField name="*_f_s" type="float" indexed="false" stored="true"/>
     <dynamicField name="*_d_s" type="double" indexed="false" stored="true"/>
+    <dynamicField name="*_dt_s" type="date" indexed="false" stored="true"/>
     <dynamicField name="*_ti_s" type="tint" indexed="false" stored="true"/>
     <dynamicField name="*_tl_s" type="tlong" indexed="false" stored="true"/>
     <dynamicField name="*_tf_s" type="tfloat" indexed="false" stored="true"/>
@@ -349,6 +351,7 @@
     <dynamicField name="*_l_i_m" type="long" indexed="true" stored="false" multiValued="true"/>
     <dynamicField name="*_f_i_m" type="float" indexed="true" stored="false" multiValued="true"/>
     <dynamicField name="*_d_i_m" type="double" indexed="true" stored="false" multiValued="true"/>
+    <dynamicField name="*_dt_i_m" type="date" indexed="true" stored="false" multiValued="true"/>
     <dynamicField name="*_ti_i_m" type="tint" indexed="true" stored="false" multiValued="true"/>
     <dynamicField name="*_tl_i_m" type="tlong" indexed="true" stored="false" multiValued="true"/>
     <dynamicField name="*_tf_i_m" type="tfloat" indexed="true" stored="false" multiValued="true"/>
@@ -403,11 +406,31 @@
     <dynamicField name="*_l_s_m" type="long" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_f_s_m" type="float" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_d_s_m" type="double" indexed="false" stored="true" multiValued="true"/>
+    <dynamicField name="*_dt_s_m" type="date" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_ti_s_m" type="tint" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_tl_s_m" type="tlong" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_tf_s_m" type="tfloat" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_td_s_m" type="tdouble" indexed="false" stored="true" multiValued="true"/>
     <dynamicField name="*_tdt_s_m" type="tdate" indexed="false" stored="true" multiValued="true"/>
+    <!-- Dynamic field definitions (docValues) -->
+    <dynamicField name="*_s_dv" type="string" indexed="true" stored="true" docValues="true"/>
+    <dynamicField name="*_i_dv" type="int" indexed="true" stored="true" docValues="true"/>
+    <dynamicField name="*_l_dv" type="long" indexed="true" stored="true" docValues="true"/>
+    <dynamicField name="*_f_dv" type="float" indexed="true" stored="true" docValues="true"/>
+    <dynamicField name="*_d_dv" type="double" indexed="true" stored="true" docValues="true"/>
+    <dynamicField name="*_dt_dv" type="date" indexed="true" stored="true" docValues="true"/>
+    <dynamicField name="*_s_i_dv" type="string" indexed="true" stored="false" docValues="true"/>
+    <dynamicField name="*_i_i_dv" type="int" indexed="true" stored="false" docValues="true"/>
+    <dynamicField name="*_l_i_dv" type="long" indexed="true" stored="false" docValues="true"/>
+    <dynamicField name="*_f_i_dv" type="float" indexed="true" stored="false" docValues="true"/>
+    <dynamicField name="*_d_i_dv" type="double" indexed="true" stored="false" docValues="true"/>
+    <dynamicField name="*_dt_i_dv" type="date" indexed="true" stored="false" docValues="true"/>
+    <dynamicField name="*_s_s_dv" type="string" indexed="false" stored="true" docValues="true"/>
+    <dynamicField name="*_i_s_dv" type="int" indexed="false" stored="true" docValues="true"/>
+    <dynamicField name="*_l_s_dv" type="long" indexed="false" stored="true" docValues="true"/>
+    <dynamicField name="*_f_s_dv" type="float" indexed="false" stored="true" docValues="true"/>
+    <dynamicField name="*_d_s_dv" type="double" indexed="false" stored="true" docValues="true"/>
+    <dynamicField name="*_dt_s_dv" type="date" indexed="false" stored="true" docValues="true"/>
     <!-- Dynamic field definitions (compatibility) -->
     <dynamicField name="*_pi" type="pint" indexed="true" stored="true"/>
     <dynamicField name="*_pl" type="plong" indexed="true" stored="true"/>
