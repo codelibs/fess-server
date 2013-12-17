@@ -380,9 +380,6 @@
         <include name="*.jar"/>
       </fileset>
     </copy>
-    <mkdir dir="${package.build.dir}/webapps/solr/WEB-INF/classes"/>
-    <copy file="${build.solr.example.dir}/resources/log4j.properties"
-      todir="${package.build.dir}/webapps/solr/WEB-INF/classes" overwrite="true"/>
     <!-- copy solr dist -->
     <mkdir dir="${package.build.dir}/solr/dist"/>
     <copy todir="${package.build.dir}/solr/dist" overwrite="true">
