@@ -64,7 +64,6 @@
   <target name="build" depends="display.logo"
           description="--> Build Fess">
     <antcall target="build.fess"/>
-    <antcall target="build.lucene-gosen"/>
     <antcall target="setup.tomcat"/>
     <antcall target="setup.solr"/>
     <antcall target="setup.server"/>
@@ -239,48 +238,6 @@
   </target>
 
   <!-- =================================================================== -->
-  <!-- BUILD lucene-gosen                                                  -->
-  <!-- =================================================================== -->
-
-  <target name="build.lucene-gosen" 
-          description="--> Build lucene-gosen">
-    <mkdir dir="${build.dir}"/>
-
-    <antcall target="checkout.lucene-gosen"/>
-    <antcall target="build.lucene-gosen.app"/>
-  </target>
-
-  <target name="checkout.lucene-gosen" 
-          description="--> Checkout lucene-gosen">
-    <exec
-      executable="svn"
-      dir="${build.dir}"
-      >
-        <arg line="checkout ${lucene-gosen.svn.path} --revision ${lucene-gosen.svn.revision} ${lucene-gosen.svn.module}"/>
-    </exec>
-  </target>
-
-  <target name="build.lucene-gosen.app" depends="setup.shell"
-          description="--> Build lucene-gosen by Ant">
-    <!-- build -->
-    <exec
-      executable="${shell.cmd}"
-      failonerror="true"
-      dir="${build.lucene-gosen.dir}"
-      >
-      <arg line="${shell.options} 'ant nodic-jar'"/>
-    </exec>
-    <!-- build dic -->
-    <exec
-      executable="${shell.cmd}"
-      failonerror="true"
-      dir="${build.lucene-gosen.dir}"
-      >
-      <arg line="${shell.options} 'ant build-dic-naist-chasen'"/>
-    </exec>
-  </target>
-
-  <!-- =================================================================== -->
   <!-- BUILD FESS SOLR PLUGIN                                              -->
   <!-- =================================================================== -->
 
@@ -408,25 +365,6 @@
     <copy file="${package.build.dir}/solr/core1/conf/lang/userdict_ja.txt"
       tofile="${package.build.dir}/solr/core1/conf/lang/userdict_suggest_ja.txt"
       overwrite="true"/>
-    <!-- copy lucene-gosen -->
-    <mkdir dir="${package.build.dir}/solr/lib"/>
-    <copy todir="${package.build.dir}/solr/lib" overwrite="true">
-      <fileset dir="${build.lucene-gosen.dir}/dist">
-        <include name="*.jar"/>
-      </fileset>
-    </copy>
-    <mkdir dir="${package.build.dir}/solr/core1/conf/dictionary/naist-chasen"/>
-    <copy todir="${package.build.dir}/solr/core1/conf/dictionary/naist-chasen"
-      overwrite="true">
-      <fileset dir="${build.lucene-gosen.dir}/dictionary/naist-chasen">
-        <include name="*.sen"/>
-      </fileset>
-    </copy>
-    <copy todir="${package.build.dir}/solr/core1/conf" overwrite="true">
-      <fileset dir="${build.lucene-gosen.dir}/example">
-        <include name="*_ja.txt"/>
-      </fileset>
-    </copy>
     <!-- copy tomcat -->
     <copy todir="${package.build.dir}" overwrite="true">
       <fileset dir="${src.tomcat.dir}">
