@@ -105,28 +105,9 @@
     <field name="id" type="string" stored="true" indexed="true" required="true"
       multiValued="false" />
     <!-- core fields -->
-    <field name="parentId" type="string" stored="true" indexed="true"/>
     <field name="segment" type="string" stored="true" indexed="true"/>
-    <field name="digest" type="string" stored="true" indexed="false"/>
-    <field name="boost" type="float" stored="true" indexed="false"/>
-    <field name="host" type="domain_name" stored="true" indexed="true"/>
-    <field name="site" type="string" stored="true" indexed="false"/>
-    <field name="url" type="string" stored="true" indexed="true" required="true"/>
-    <field name="content" type="text" stored="true" indexed="true" termVectors="true"/>
-    <field name="title" type="text" stored="true" indexed="true" termVectors="true"/>
-    <field name="cache" type="string" stored="true" indexed="false"/>
-    <field name="created" type="tdate" stored="true" indexed="true"/>
-    <field name="anchor" type="string" stored="true" indexed="true" multiValued="true"/>
-    <field name="contentLength" type="tlong" stored="true" indexed="true"/>
-    <field name="lastModified" type="tdate" stored="true" indexed="true"/>
-    <field name="mimetype" type="string" stored="true" indexed="true"/>
     <field name="_version_" type="long" indexed="true" stored="true"/>
-    <!-- multi values -->
-    <field name="type" type="string" stored="true" indexed="true" multiValued="true"/>
-    <field name="label" type="string" stored="true" indexed="true" multiValued="true"/>
-    <field name="role" type="string" stored="true" indexed="true" multiValued="true"/>
-    <!-- geo search -->
-    <field name="location" type="location" indexed="true" stored="true"/>
+
     <!-- Language Dynamic field definitions -->
     <dynamicField name="*_ar" type="text_ar" indexed="true" stored="true" termVectors="true"/>
     <dynamicField name="*_bg" type="text_bg" indexed="true" stored="true" termVectors="true"/>
