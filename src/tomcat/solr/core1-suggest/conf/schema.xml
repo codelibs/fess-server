@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="fess" version="1.5">
+<schema name="fess-suggest" version="1.5">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and 
        semantics.  It should not normally be changed by applications.
@@ -1243,7 +1243,7 @@
 
     <fieldType name="text" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
       <analyzer type="index">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.MonitoringTokenizerFactory"
+        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
             monitoringFile="synonyms.txt"
             baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="true" synonyms="synonyms.txt"
@@ -1252,7 +1252,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
       <analyzer type="query">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.MonitoringTokenizerFactory"
+        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
             monitoringFile="synonyms.txt"
             baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="false" synonyms="synonyms.txt"

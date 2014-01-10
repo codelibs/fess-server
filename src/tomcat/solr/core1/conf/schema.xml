@@ -1262,7 +1262,7 @@
 
     <fieldType name="text" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
       <analyzer type="index">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.MonitoringTokenizerFactory"
+        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
             monitoringFile="synonyms.txt"
             baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="true" synonyms="synonyms.txt"
@@ -1271,7 +1271,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
       <analyzer type="query">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.MonitoringTokenizerFactory"
+        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
             monitoringFile="synonyms.txt"
             baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="false" synonyms="synonyms.txt"
