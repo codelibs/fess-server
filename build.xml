@@ -331,6 +331,12 @@
     <delete file="${package.build.dir}/solr/core1/solr.xml"/>
     <move file="${package.build.dir}/solr/core1/zoo.cfg"
       tofile="${package.build.dir}/solr/zoo.cfg"/>
+    <!-- Suggest -->
+    <copy todir="${package.build.dir}/solr/core1-suggest" overwrite="true">
+        <fileset dir="${package.build.dir}/solr/core1">
+        <include name="**"/>
+      </fileset>
+    </copy>
     <!-- Logging -->
     <copy todir="${package.build.dir}/webapps/solr/WEB-INF/lib" overwrite="true">
       <fileset dir="${build.solr.example.dir}/lib/ext">
