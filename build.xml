@@ -361,9 +361,9 @@
     <mkdir dir="${build.fess.solr.plugin.deployed.jar.dir}"/>
     <copy file="${build.fess.solr.plugin.jar.file}"
       tofile="${build.fess.solr.plugin.deployed.jar.file}" overwrite="true"/>
-    <copy file="${build.fess.suggest.plugin.jar.file}"
-      tofile="${build.fess.suggest.plugin.deployed.jar.file}" overwrite="true"/>
-    <copy file="${build.fess.solrlib.plugin.jar.file}"
+    <copy file="${build.fess.suggest.jar.file}"
+      tofile="${build.fess.suggest.deployed.jar.file}" overwrite="true"/>
+    <copy file="${build.fess.suggest.jar.file}"
 	          tofile="${build.fess.solrlib.plugin.deployed.jar.file}" overwrite="true"/>
     <copy todir="${package.build.dir}/solr/lib" overwrite="true">
       <fileset dir="${build.fess.solr.plugin.dir}/target/dependency">

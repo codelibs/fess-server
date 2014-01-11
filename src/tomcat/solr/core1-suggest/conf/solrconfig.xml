@@ -333,8 +333,11 @@
     -->
 
   <!-- The default high-performance update handler -->
-  <updateHandler class="jp.sf.fess.solr.plugin.update.FessDirectUpdateHandler">
-  <!-- <updateHandler class="jp.sf.fess.suggest.solr.SuggestTranslogUpdateHandler"> -->
+  <updateHandler class="jp.sf.fess.solr.plugin.update.FessUpdateHandler">
+    <filters>
+      <filter class="jp.sf.fess.solr.plugin.update.DocValueUpdateHandlerFilter"/>
+      <!-- <filter class="jp.sf.fess.suggest.solr.SuggestTranslogUpdateHandlerFilter"/> -->
+    </filters>
 
     <!-- Enables a transaction log, used for real-time get, durability, and
          and solr cloud replica recovery.  The log can grow as big as
@@ -847,7 +850,7 @@
      <lst name="defaults">
        <str name="echoParams">explicit</str>
        <int name="rows">10</int>
-       <str name="df">content</str>
+       <str name="df">reading_s</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
