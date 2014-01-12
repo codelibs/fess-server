@@ -336,7 +336,7 @@
   <updateHandler class="jp.sf.fess.solr.plugin.update.FessUpdateHandler">
     <filters>
       <filter class="jp.sf.fess.solr.plugin.update.DocValueUpdateHandlerFilter"/>
-      <!-- <filter class="jp.sf.fess.suggest.solr.SuggestTranslogUpdateHandlerFilter"/> -->
+      <!-- <filter class="jp.sf.fess.solr.plugin.update.SuggestTranslogUpdateHandlerFilter"/> -->
     </filters>
 
     <!-- Enables a transaction log, used for real-time get, durability, and
