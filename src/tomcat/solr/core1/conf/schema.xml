@@ -1261,35 +1261,16 @@
     </fieldType>
 
     <fieldType name="text" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
-      <analyzer type="index">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
-            monitoringFile="synonyms.txt"
-            baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
-            expand="true" synonyms="synonyms.txt"
-            />
-        <filter class="solr.CJKWidthFilterFactory"/>
-        <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer>
-      <analyzer type="query">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
-            monitoringFile="synonyms.txt"
-            baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
-            expand="false" synonyms="synonyms.txt"
-            />
-        <filter class="solr.CJKWidthFilterFactory"/>
-        <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer>
-    </fieldType>
-    <!--
-    <fieldType name="text" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenFilterFactory"
+            monitoringFile="synonyms.txt"
+            baseClass="org.apache.lucene.analysis.synonym.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter class="solr.CJKWidthFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.CJKBigramFilterFactory"/>
       </analyzer>
     </fieldType>
-    -->
 
     <fieldType name="url" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
