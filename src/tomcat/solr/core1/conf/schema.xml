@@ -111,7 +111,7 @@
     <field name="boost" type="float" stored="true" indexed="false"/>
     <field name="host" type="domain_name" stored="true" indexed="true"/>
     <field name="site" type="string" stored="true" indexed="false"/>
-    <field name="url" type="string" stored="true" indexed="true" required="true"/>
+    <field name="url" type="string" stored="true" indexed="true"/>
     <field name="content" type="text" stored="true" indexed="true" termVectors="true"/>
     <field name="title" type="text" stored="true" indexed="true" termVectors="true"/>
     <field name="cache" type="string" stored="true" indexed="false"/>
