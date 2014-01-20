@@ -350,6 +350,7 @@
     </updateLog>
  
     <!-- SuggestTranslogUpdateHandler settings -->
+    <suggest>
       <solrUrl>http://localhost:8080/solr/core1-suggest</solrUrl>
       <solrUser>solradmin</solrUser>
       <solrPassword>solradmin</solrPassword>
@@ -376,6 +377,7 @@
           <normalizer class="jp.sf.fess.suggest.normalizer.ICUNormalizer" transliteratorId="Any-Lower" />
         </suggestNormalizer>
       </suggestFieldInfo> 
+    </suggest>
 
     <!-- AutoCommit
 
