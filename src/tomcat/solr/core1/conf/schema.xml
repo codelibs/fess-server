@@ -1144,8 +1144,10 @@
 
            See http://wiki.apache.org/solr/JapaneseLanguageSupport for more on Japanese language support.
         -->
-        <tokenizer class="solr.JapaneseTokenizerFactory" mode="search"/>
-        <!--<tokenizer class="solr.JapaneseTokenizerFactory" mode="search" userDictionary="lang/userdict_ja.txt"/>-->
+        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
+            monitoringFile="lang/userdict_ja.txt"
+            baseClass="org.apache.lucene.analysis.ja.JapaneseTokenizerFactory"
+            mode="search" userDictionary="lang/userdict_ja.txt"/>
         <!-- Reduces inflected verbs and adjectives to their base/dictionary forms (辞書形) -->
         <filter class="solr.JapaneseBaseFormFilterFactory"/>
         <!-- Removes tokens with certain part-of-speech tags -->
