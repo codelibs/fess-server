@@ -349,13 +349,21 @@
       <str name="dir">${solr.solr.home}/${solr.core.name}/txlog</str>
     </updateLog>
  
-    <!-- SuggestTranslogUpdateHandler settings
-      <solrUrl>http://localhost:8080/solr/core1-suggest</solrUrl>
-      <solrUser>solradmin</solrUser>
-      <solrPassword>solradmin</solrPassword>
+    <!-- SuggestTranslogUpdateHandler settings -->
+    <suggest>
+      <solrServer class="org.codelibs.solr.lib.server.SolrLibHttpSolrServer">
+        <arg>http://localhost:8080/solr/core1-suggest</arg>
+        <credentials>
+          <username>solradmin</username>
+          <password>solradmin</password>
+        </credentials>
+        <connectionTimeout type="int">10000</connectionTimeout>
+        <maxRetries type="int">1</maxRetries>
+      </solrServer>
       <expiresField>expires_dt</expiresField>
       <segmentField>segment</segmentField>
       <labelFields>label</labelFields>
+      <roleFields>role</roleFields>
       <suggestFieldInfo fieldName="content">
         <tokenizerFactory class="jp.sf.fess.suggest.analysis.SuggestTokenizerFactory" includePartOfSpeech="start:名詞,start:接頭詞,start:形容詞,middle:名詞,middle:接頭詞,middle:形容詞" excludePartOfSpeech="start:副詞可能" includeCharTerm="middle:な" />
         <suggestReadingConverter>
@@ -375,7 +383,7 @@
           <normalizer class="jp.sf.fess.suggest.normalizer.ICUNormalizer" transliteratorId="Any-Lower" />
         </suggestNormalizer>
       </suggestFieldInfo> 
-    -->
+    </suggest>
 
     <!-- AutoCommit
 
@@ -850,7 +858,7 @@
      <lst name="defaults">
        <str name="echoParams">explicit</str>
        <int name="rows">10</int>
-       <str name="df">reading_s</str>
+       <str name="df">content</str>
      </lst>
     <!-- In addition to defaults, "appends" params can be specified
          to identify values which should be appended to the list of
