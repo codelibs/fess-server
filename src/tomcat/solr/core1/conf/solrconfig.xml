@@ -358,7 +358,7 @@
           <password>solradmin</password>
         </credentials>
         <connectionTimeout type="int">10000</connectionTimeout>
-        <soTimeout type="int">20000</soTimeout>
+        <soTimeout type="int">60000</soTimeout>
         <maxRetries type="int">1</maxRetries>
       </solrServer>
       <expiresField>expires_dt</expiresField>
