@@ -1751,8 +1751,7 @@
          <bool name="langid.map">true</bool>
          <bool name="langid.map.keepOrig">true</bool>
          <str name="langid.map.lcmap">zh:cjk zh_CN:cjk zh_TW:cjk ko:cjk</str>
-         <!-- If you want to run on English environment, replace with en -->
-         <str name="langid.fallback">ja</str>
+         <str name="langid.fallback">en</str>
        </processor>
        <processor class="solr.LogUpdateProcessorFactory" />
        <processor class="solr.RunUpdateProcessorFactory" />
