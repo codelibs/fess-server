@@ -1746,7 +1746,7 @@
      <updateRequestProcessorChain name="langid">
        <processor class="org.apache.solr.update.processor.LangDetectLanguageIdentifierUpdateProcessorFactory">
          <str name="langid.fl">content</str>
-         <str name="langid.langField">solrlang_s</str>
+         <str name="langid.langField">lang_s</str>
          <str name="langid.whitelist">ar,bg,ca,cz,da,de,el,es,eu,fa,fi,fr,ga,gl,hi,hu,hy,id,it,ja,lv,ko,nl,no,pt,ro,ru,sv,th,tr,zh,zh_CN,zh_TW</str>
          <bool name="langid.map">true</bool>
          <bool name="langid.map.keepOrig">true</bool>
