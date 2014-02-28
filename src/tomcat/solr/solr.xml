@@ -30,7 +30,7 @@
 
 <!--
   <solrcloud>
-    <int name="zkClientTimeout">${zkClientTimeout:15000}</int>
+    <int name="zkClientTimeout">${zkClientTimeout:30000}</int>
     <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
   </solrcloud>
 -->
