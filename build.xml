@@ -363,6 +363,8 @@
       tofile="${build.fess.solr.plugin.deployed.jar.file}" overwrite="true"/>
     <copy file="${build.fess.suggest.jar.file}"
       tofile="${build.fess.suggest.deployed.jar.file}" overwrite="true"/>
+    <copy file="${build.corelib.jar.file}"
+	          tofile="${build.corelib.deployed.jar.file}" overwrite="true"/>
     <copy file="${build.solrlib.jar.file}"
 	          tofile="${build.solrlib.deployed.jar.file}" overwrite="true"/>
     <copy todir="${package.build.dir}/solr/lib" overwrite="true">
