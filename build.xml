@@ -393,6 +393,10 @@
     <zip file="${package.build.file}">
       <zipfileset dir="${build.dir}">
         <include name="${package.build.name}/**"/>
+        <exclude name="${package.build.name}/**/*.sh"/>
+      </zipfileset>
+      <zipfileset dir="${build.dir}" filemode="755">
+        <include name="${package.build.name}/**/*.sh"/>
       </zipfileset>
     </zip>
   </target>
