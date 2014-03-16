@@ -347,7 +347,10 @@
     <mkdir dir="${package.build.dir}/solr/dist"/>
     <copy todir="${package.build.dir}/solr/dist" overwrite="true">
       <fileset dir="${build.solr.dir}/dist">
-        <include name="**"/>
+        <include name="solr-cell-*"/>
+        <include name="solr-clustering-*"/>
+        <include name="solr-langid-*"/>
+        <include name="solr-velocity-*"/>
       </fileset>
     </copy>
     <!-- copy solr contrib -->
