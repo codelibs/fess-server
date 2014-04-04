@@ -31,7 +31,7 @@ Source0:  fess-server-%{fess_pkg_version}.zip
 
 BuildRequires: unzip
 
-Requires:      jdk >= 1.6.0
+Requires:      jdk >= 1.7.0
 Requires(pre): user(%{user_name})
 Requires(pre): group(%{user_name})
 Requires(pre): shadow-utils
