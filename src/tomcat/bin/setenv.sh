@@ -2,7 +2,7 @@
 
 export JAVA_OPTS="$JAVA_OPTS -Dsolr.solr.home=$CATALINA_HOME/solr -Dfess.log.file=$CATALINA_HOME/webapps/fess/WEB-INF/logs/fess.out -Dsolr.log.file=$CATALINA_HOME/logs/solr.log -Djava.awt.headless=true -server -Xmx1g -XX:+UseTLAB -XX:+DisableExplicitGC"
 
-JAVA_VER=$(java -version 2>&1 | sed 's/.*version "\(.*\)\.\(.*\)\..*"/\1\2/; 1q')
+JAVA_VER=$(java -version 2>&1 | grep version | sed 's/.*version "\(.*\)\.\(.*\)\..*"/\1\2/; 1q')
 if [ "$JAVA_VER" -ge 18 ] ; then
   export JAVA_OPTS="$JAVA_OPTS -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:InitiatingHeapOccupancyPercent=45 -XX:MaxGCPauseMillis=200"
 else
