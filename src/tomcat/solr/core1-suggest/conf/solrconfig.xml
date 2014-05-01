@@ -35,7 +35,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>4.7</luceneMatchVersion>
+  <luceneMatchVersion>4.8</luceneMatchVersion>
 
   <!-- <lib/> directives can be used to instruct Solr to load an Jars
        identified and use them to resolve any "plugins" specified in
@@ -128,6 +128,10 @@
     <str name="solr.hdfs.confdir">${solr.hdfs.confdir:}</str>
     <!-- Enable/Disable the hdfs cache. -->
     <str name="solr.hdfs.blockcache.enabled">${solr.hdfs.blockcache.enabled:true}</str>
+    <!-- Enable/Disable using one global cache for all SolrCores.
+         The settings used will be from the first HdfsDirectoryFactory created. -->
+    <str name="solr.hdfs.blockcache.global">${solr.hdfs.blockcache.global:true}</str>
+
 
   </directoryFactory>
 

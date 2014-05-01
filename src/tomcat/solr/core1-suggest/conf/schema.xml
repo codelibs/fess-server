@@ -63,7 +63,6 @@
             (int, float, boolean, string...)
      -->
 
-  <fields>
    <!-- Valid attributes for fields:
      name: mandatory - the name for the field
      type: mandatory - the name of a field type from the 
@@ -432,21 +431,12 @@
     <dynamicField name="*_f_s_dv" type="float" indexed="false" stored="true" docValues="true"/>
     <dynamicField name="*_d_s_dv" type="double" indexed="false" stored="true" docValues="true"/>
     <dynamicField name="*_dt_s_dv" type="date" indexed="false" stored="true" docValues="true"/>
-    <!-- Dynamic field definitions (compatibility) -->
-    <dynamicField name="*_pi" type="pint" indexed="true" stored="true"/>
-    <dynamicField name="*_pl" type="plong" indexed="true" stored="true"/>
-    <dynamicField name="*_pf" type="pfloat" indexed="true" stored="true"/>
-    <dynamicField name="*_pd" type="pdouble" indexed="true" stored="true"/>
-    <dynamicField name="*_pdt" type="pdate" indexed="true" stored="true"/>
-
-  </fields>
 
  <!-- Field to use to determine and enforce document uniqueness. 
       Unless this field is marked with required="false", it will be a required field
    -->
   <uniqueKey>id</uniqueKey>
 
-  <types>
     <!-- field type definitions. The "name" attribute is
        just a label to be used by field definitions.  The "class"
        attribute and any other attributes determine the real
@@ -545,6 +535,8 @@
       Plain numeric field types that store and index the text
       value verbatim (and hence don't correctly support range queries, since the
       lexicographic ordering isn't equal to the numeric ordering)
+
+      NOTE: These field types are deprecated will be removed in Solr 5.0!
     -->
     <fieldType name="pint" class="solr.IntField"/>
     <fieldType name="plong" class="solr.LongField"/>
@@ -589,6 +581,15 @@
     <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+
+    <!-- A text type for English text where stopwords and synonyms are managed using the REST API -->
+    <fieldType name="managed_en" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.ManagedStopFilterFactory" managed="english" />
+        <filter class="solr.ManagedSynonymFilterFactory" managed="english" />
       </analyzer>
     </fieldType>
 
@@ -764,7 +765,7 @@
              See the Java Regular Expression documentation for more
              information on pattern and replacement string syntax.
              
-             http://java.sun.com/j2se/1.6.0/docs/api/java/util/regex/package-summary.html
+             http://docs.oracle.com/javase/7/docs/api/java/util/regex/package-summary.html
           -->
         <filter class="solr.PatternReplaceFilterFactory"
                 pattern="([^a-z])" replacement="" replace="all"
@@ -1268,6 +1269,7 @@
     <fieldType name="text_tr" class="solr.TextField" positionIncrementGap="100">
       <analyzer> 
         <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.ApostropheFilterFactory"/>
         <filter class="solr.TurkishLowerCaseFilterFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="false" words="lang/stopwords_tr.txt" />
         <filter class="solr.SnowballPorterFilterFactory" language="Turkish"/>
@@ -1304,8 +1306,6 @@
       </analyzer>
     </fieldType>
 
- </types>
-  
   <!-- Similarity is the scoring routine for each document vs. a query.
        A custom Similarity or SimilarityFactory may be specified here, but 
        the default is fine for most applications.  
