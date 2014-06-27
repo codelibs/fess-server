@@ -382,11 +382,16 @@
     <copy todir="${package.build.dir}" overwrite="true">
       <fileset dir="${src.tomcat.dir}">
         <include name="**"/>
+        <exclude name="**/*_append*"/>
       </fileset>
     </copy>
     <concat destfile="${package.build.dir}/NOTICE" append="true"
       encoding="UTF-8" outputencoding="UTF-8">
       <filelist dir="${basedir}" files="NOTICE"/>
+    </concat>
+    <concat destfile="${package.build.dir}/conf/logging.properties" append="true"
+      eol="dos" encoding="UTF-8" outputencoding="UTF-8">
+      <filelist dir="${src.tomcat.dir}/conf" files="logging_append.properties"/>
     </concat>
   </target>
 
