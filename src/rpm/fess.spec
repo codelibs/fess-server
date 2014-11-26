@@ -1,9 +1,10 @@
 %define __jar_repack 0
 
+%global ostype __OSTYPE__
 %global dbtype __DBTYPE__
 %global fess_version __FESS_VERSION__
 %global fess_pkg_version __FESS_PKG_VERSION__
-%global fess_release __FESS_REVISION__
+%global fess_release __FESS_REVISION__.%{ostype}
 %global product_root __PRODUCT_ROOT__
 %global product_name __PRODUCT_NAME__
 %global user_name __USER_NAME__
@@ -38,8 +39,13 @@ Requires(pre): shadow-utils
 Provides:      user(%{user_name})
 Provides:      group(%{user_name})
 
+%if "%{ostype}" == "el7"
+Requires(post): systemd
+Requires(preun): systemd
+%else
 Requires(post): chkconfig
 Requires(preun): chkconfig
+%endif
 Requires(preun): initscripts
 Requires(postun): initscripts
 
@@ -91,10 +97,18 @@ touch $RPM_BUILD_ROOT%{product_root}/%{product_name}/webapps/%{product_name}/WEB
 chmod +x $RPM_BUILD_ROOT%{product_root}/%{product_name}/bin/*.sh
 chmod +x $RPM_BUILD_ROOT%{product_root}/%{product_name}/extension/mysql/*.sh
 
+%if "%{ostype}" == "el7"
+mkdir -p $RPM_BUILD_ROOT/lib/systemd/system
+sed -e "s/fess/%{product_name}/g" \
+    $RPM_BUILD_DIR/fess-server-%{fess_pkg_version}/extension/scripts/fess.service > $RPM_BUILD_ROOT/lib/systemd/system/%{product_name}.service
+%else
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
 sed -e "s/FESS_PROG=fess/FESS_PROG=%{product_name}/" \
     -e "s/FESS_USER=\"fess\"/FESS_USER=\"%{user_name}\"/" \
     $RPM_BUILD_DIR/fess-server-%{fess_pkg_version}/extension/scripts/fess > $RPM_BUILD_ROOT/etc/init.d/%{product_name}
+mkdir -p $RPM_BUILD_ROOT/run/%{product_name}
+%endif
+
 
 %clean
 rm -rf "${RPM_BUILD_ROOT}"
@@ -106,7 +120,12 @@ useradd -d %{product_root}/%{product_name} -g %{user_name} -M -r %{user_name}
 exit 0
 
 %post
+%if "%{ostype}" == "el7"
+/bin/systemctl enable %{product_name}.service > /dev/null
+/bin/systemctl daemon-reload > /dev/null
+%else
 /sbin/chkconfig --add %{product_name}
+%endif
 
 %if "%{dbtype}" == "mysql"
     echo "Please run the following script to configure database."
@@ -116,29 +135,48 @@ exit 0
 %preun
 # only delete user on removal, not upgrade
 if [ $1 = 0 ]; then
+%if "%{ostype}" == "el7"
+    /bin/systemctl stop %{product_name} > /dev/null 2>&1
+    /bin/systemctl disable %{product_name} > /dev/null 2>&1
+    /bin/systemctl daemon-reload
+%else
     /sbin/service %{product_name} stop > /dev/null 2>&1
     /sbin/chkconfig --del %{product_name}
+%endif
+
     pkill -U %{user_name}
     userdel %{user_name}
     rm -rf %{product_root}/%{product_name}/logs/*
     rm -rf %{product_root}/%{product_name}/conf/Catalina
     rm -rf %{product_root}/%{product_name}/webapps/%{product_name}/WEB-INF/logs/*
 else
+%if "%{ostype}" == "el7"
+    /bin/systemctl stop %{product_name} > /dev/null 2>&1
+%else
     /sbin/service %{product_name} stop > /dev/null 2>&1
+%endif
 fi
 rm -rf %{product_root}/%{product_name}/webapps/%{product_name}/jar
 rm -rf %{product_root}/%{product_name}/work/*
 
 %postun
 if [ $1 -ge 1 ]; then
+%if "%{ostype}" == "el7"
+    /bin/systemctl start %{product_name}.service > /dev/null 2>&1
+%else
     /sbin/service %{product_name} start > /dev/null 2>&1
+%endif
 fi
 
 %files 
 %defattr(-,%{user_name},%{user_name},0755)
 %{product_root}/%{product_name}
 
+%if "%{ostype}" == "el7"
+%attr(644,root,root) /lib/systemd/system/%{product_name}.service
+%else
 %attr(755,root,root) /etc/init.d/%{product_name}
+%endif
 
 %changelog
 

@@ -1,0 +1,24 @@
+[Unit]
+Description=fess server
+After=network.target httpd.service
+
+[Service]
+Type=forking
+PermissionsStartOnly=true
+Environment=CATALINA_HOME=/opt/fess CATALINA_PID=/run/fess/fess.pid
+PIDFile=/run/fess/fess.pid
+User=fess
+Group=fess
+
+ExecStartPre=/bin/mkdir -p --mode=755 /run/fess
+ExecStartPre=/bin/chown fess:fess /run/fess
+
+ExecStart=/opt/fess/bin/startup.sh
+ExecStop=/opt/fess/bin/shutdown.sh
+
+KillMode=none
+Restart=always
+RestartSec=180s
+
+[Install]
+WantedBy=multi-user.target
