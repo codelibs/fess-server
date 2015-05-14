@@ -1802,6 +1802,7 @@
      </updateRequestProcessorChain>
     -->
      <updateRequestProcessorChain name="langid">
+<!--
        <processor class="org.apache.solr.update.processor.LangDetectLanguageIdentifierUpdateProcessorFactory">
          <str name="langid.fl">content</str>
          <str name="langid.langField">lang_s</str>
@@ -1811,6 +1812,7 @@
          <str name="langid.map.lcmap">zh:cjk zh_CN:cjk zh_TW:cjk ko:cjk</str>
          <str name="langid.fallback">en</str>
        </processor>
+-->
        <processor class="solr.LogUpdateProcessorFactory" />
        <processor class="solr.RunUpdateProcessorFactory" />
      </updateRequestProcessorChain>
