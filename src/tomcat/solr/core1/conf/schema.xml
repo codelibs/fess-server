@@ -1136,6 +1136,7 @@
     -->
     <fieldType name="text_ja" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
       <analyzer>
+        <charFilter class="solr.MappingCharFilterFactory" mapping="lang/mapping_ja.txt"/>
       <!-- Kuromoji Japanese morphological analyzer/tokenizer (JapaneseTokenizer)
 
            Kuromoji has a search mode (default) that does segmentation useful for search.  A heuristic
