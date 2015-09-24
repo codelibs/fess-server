@@ -1165,9 +1165,7 @@
 
            See http://wiki.apache.org/solr/JapaneseLanguageSupport for more on Japanese language support.
         -->
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
-            monitoringFile="lang/userdict_ja.txt"
-            baseClass="org.apache.lucene.analysis.ja.JapaneseTokenizerFactory"
+        <tokenizer class="org.apache.lucene.analysis.ja.JapaneseTokenizerFactory"
             mode="search" userDictionary="lang/userdict_ja.txt"/>
         <!-- Reduces inflected verbs and adjectives to their base/dictionary forms (辞書形) -->
         <filter class="solr.JapaneseBaseFormFilterFactory"/>
@@ -1285,9 +1283,7 @@
 
     <fieldType name="text" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
       <analyzer type="index">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
-            monitoringFile="synonyms.txt"
-            baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
+        <tokenizer class="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="true"
             n="2"
             synonyms="synonyms.txt"
@@ -1295,9 +1291,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
       <analyzer type="query">
-        <tokenizer class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenizerFactory"
-            monitoringFile="synonyms.txt"
-            baseClass="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
+        <tokenizer class="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="false"
             n="2"
             synonyms="synonyms.txt"
@@ -1310,9 +1304,7 @@
     <fieldType name="text" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="jp.sf.fess.solr.plugin.analysis.monitor.MonitoringTokenFilterFactory"
-            monitoringFile="synonyms.txt"
-            baseClass="org.apache.lucene.analysis.synonym.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+        <filter class="org.apache.lucene.analysis.synonym.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter class="solr.CJKWidthFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.CJKBigramFilterFactory"/>
