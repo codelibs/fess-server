@@ -375,9 +375,6 @@
         <include name="icu4j-*.jar"/>
       </fileset>
     </copy>
-    <copy file="${package.build.dir}/solr/core1/conf/lang/userdict_ja.txt"
-      tofile="${package.build.dir}/solr/core1/conf/lang/userdict_suggest_ja.txt"
-      overwrite="true"/>
     <!-- copy tomcat -->
     <copy todir="${package.build.dir}" overwrite="true">
       <fileset dir="${src.tomcat.dir}">
