@@ -568,19 +568,3 @@ INSERT INTO SCHEDULED_JOB (ID, NAME, TARGET, CRON_EXPRESSION, SCRIPT_TYPE, SCRIP
 INSERT INTO SCHEDULED_JOB (ID, NAME, TARGET, CRON_EXPRESSION, SCRIPT_TYPE, SCRIPT_DATA, CRAWLER, JOB_LOGGING, AVAILABLE, SORT_ORDER, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, VERSION_NO) VALUES (2, 'Minutely Tasks', 'all', '0 * * * * ?', 'groovy', 'return container.getComponent("aggregateLogJob").execute();', 'F', 'F', 'T', 10, 'system', '2000-01-01 00:00:00', 'system', '2000-01-01 00:00:00', 0);
 INSERT INTO SCHEDULED_JOB (ID, NAME, TARGET, CRON_EXPRESSION, SCRIPT_TYPE, SCRIPT_DATA, CRAWLER, JOB_LOGGING, AVAILABLE, SORT_ORDER, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, VERSION_NO) VALUES (3, 'Hourly Tasks', 'all', '0 0 * * * ?', 'groovy', 'return container.getComponent("updateStatsJob").execute()+container.getComponent("updateHotWordJob").execute();', 'F', 'F', 'T', 20, 'system', '2000-01-01 00:00:00', 'system', '2000-01-01 00:00:00', 0);
 INSERT INTO SCHEDULED_JOB (ID, NAME, TARGET, CRON_EXPRESSION, SCRIPT_TYPE, SCRIPT_DATA, CRAWLER, JOB_LOGGING, AVAILABLE, SORT_ORDER, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, VERSION_NO) VALUES (4, 'Daily Tasks', 'all', '0 0 0 * * ?', 'groovy', 'return container.getComponent("purgeLogJob").execute();', 'F', 'F', 'T', 30, 'system', '2000-01-01 00:00:00', 'system', '2000-01-01 00:00:00', 0);
-INSERT INTO SCHEDULED_JOB (ID, NAME, TARGET, CRON_EXPRESSION, SCRIPT_TYPE, SCRIPT_DATA, CRAWLER, JOB_LOGGING, AVAILABLE, SORT_ORDER, CREATED_BY, CREATED_TIME, UPDATED_BY, UPDATED_TIME, VERSION_NO) VALUES (5, 'Purge logs', 'all', '0 50 23 * * ?', 'groovy', 'def oneMonthAgo = (new Date()).time - 2592000000L
-
-def clean = { f ->
-  if (oneMonthAgo < f.lastModified()) {
-    return
-  }
-  if(f.isFile()){
-    f.delete();
-  } else if (f.isDirectory()) {
-    f.deleteDir()
-  }
-}
-
-new File(container.getComponent(Class.forName("javax.servlet.ServletContext")).getRealPath("../../temp")).eachFile { clean(it) }
-new File(container.getComponent(Class.forName("javax.servlet.ServletContext")).getRealPath("/WEB-INF/logs")).eachFile { clean(it) }', 'F', 'F', 'T', 100, 'system', '2000-01-01 00:00:00', 'system', '2000-01-01 00:00:00', 0);
-
