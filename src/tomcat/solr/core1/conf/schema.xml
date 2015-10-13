@@ -1283,6 +1283,7 @@
 
     <fieldType name="text" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
       <analyzer type="index">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="lang/mapping.txt"/>
         <tokenizer class="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="true"
             n="2"
