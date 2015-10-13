@@ -1292,6 +1292,7 @@
         <filter class="solr.LowerCaseFilterFactory"/>
       </analyzer>
       <analyzer type="query">
+        <charFilter class="solr.MappingCharFilterFactory" mapping="lang/mapping.txt"/>
         <tokenizer class="jp.sf.fess.solr.plugin.analysis.synonym.NGramSynonymTokenizerFactory"
             expand="false"
             n="2"
